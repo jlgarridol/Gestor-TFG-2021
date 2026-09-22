@@ -1,6 +1,7 @@
 package ubu.digit.security;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.slf4j.Logger;
@@ -73,6 +74,22 @@ public class Controller {
 		login.setUsername(username);
 		login.normalLogin();
 		this.host = new URL(validHost);
+	}
+
+	/**
+	 * Registra en el controlador una sesión iniciada mediante el flujo de SSO
+	 * vía navegador de Moodle, para la cual ya se dispone de un
+	 * {@link WebService} autenticado (ver {@link MoodleSsoLogin}).
+	 *
+	 * @param host
+	 * @param webService servicio web ya autenticado mediante SSO
+	 * @throws MalformedURLException si el host no es una URL válida
+	 */
+	public void loginMoodleUbuVirtualSso(String host, WebService webService) throws MalformedURLException {
+		LOGGER.info("Iniciando sesión SSO con el moodle de ubu");
+		login = new LoginUbuVirtual(host, webService);
+		setLogin(login);
+		this.host = new URL(host);
 	}
 
 	/**

@@ -79,7 +79,7 @@ public abstract class SistInfDataAbstract implements Serializable {
 	/**
 	 * URL donde encontramos el fichero con las propiedades del proyecto.
 	 */
-	protected static ExternalProperties prop = ExternalProperties.getInstance("/WEB-INF/classes/config.properties",false);
+	protected static ExternalProperties prop = ExternalProperties.getInstance("/config.properties",false);
 	
 	/**
 	 * Directorio donde se encuentra los datos de entrada, es decir, los

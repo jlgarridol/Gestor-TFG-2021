@@ -39,7 +39,12 @@ public class SistInfDataCsv extends SistInfDataAbstract implements Serializable 
 	 * Logger de la clase.
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(SistInfDataCsv.class.getName());
-	
+
+	/**
+	 * Sufijo de ruta usado cuando la aplicación se despliega como WAR clásico.
+	 */
+	private static final String WEB_INF_CLASSES = "/WEB-INF/classes/";
+
 	/**
 	 * Conexión que se produce entre la base de datos(csv) y la aplicación.
 	 */
@@ -79,19 +84,27 @@ public class SistInfDataCsv extends SistInfDataAbstract implements Serializable 
 		String url = "jdbc:relique:csv:";
 		try {
 			Class.forName("org.relique.jdbc.csv.CsvDriver");
+			String dataDir = DIRCSV;
 			if (DIRCSV.startsWith("/")) {
 				String path = this.getClass().getClassLoader().getResource("").getPath();
-				serverPath = path.substring(0, path.length()-17);
+				if (path.endsWith(WEB_INF_CLASSES)) {
+					serverPath = path.substring(0, path.length() - WEB_INF_CLASSES.length());
+				} else {
+					// Classpath plano (p.ej. mvn spring-boot:run): no existe WEB-INF/classes,
+					// así que se resuelve dataIn respecto a la raíz del classpath.
+					serverPath = path;
+					dataDir = DIRCSV.substring(WEB_INF_CLASSES.length());
+				}
 			}
-			
-			new BOMRemoveUTF().bomRemoveUTFDirectory(serverPath + DIRCSV);
-			
+
+			new BOMRemoveUTF().bomRemoveUTFDirectory(serverPath + dataDir);
+
 			Properties props = new java.util.Properties();
 			props.put("ignoreNonParseableLines", true);
 			props.put("separator",  prop.getSetting("csvSeparator"));
 			props.put("charset", "UTF-8");
-			con = DriverManager.getConnection(url + serverPath + DIRCSV, props);
-			LOGGER.info("Ruta Fachada CSV " + url + serverPath + DIRCSV);
+			con = DriverManager.getConnection(url + serverPath + dataDir, props);
+			LOGGER.info("Ruta Fachada CSV " + url + serverPath + dataDir);
 		} catch (ClassNotFoundException | SQLException e) {
 			LOGGER.error("Error al obtener la conexión con el Csv " + e.getMessage());
 		}

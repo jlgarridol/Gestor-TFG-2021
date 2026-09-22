@@ -56,7 +56,7 @@ public class ExternalProperties implements Serializable {
 
         InputStream inputStream = null;
         try {
-        	inputStream = ExternalProperties.class.getClassLoader().getResourceAsStream(file);
+        	inputStream = ExternalProperties.class.getResourceAsStream(file);
             PROPERTIES.load(inputStream);
         } catch (IOException e) {
             LOGGER.error("ExternalProperties error al crear el InputStream y leerlo :", e);

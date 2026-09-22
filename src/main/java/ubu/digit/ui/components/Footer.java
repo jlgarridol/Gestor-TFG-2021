@@ -37,7 +37,12 @@ public class Footer extends VerticalLayout {
 	 * Serial Version UID.
 	 */
 	private static final long serialVersionUID = 1285443082746553886L;
-	
+
+	/**
+	 * Sufijo de ruta usado cuando la aplicación se despliega como WAR clásico.
+	 */
+	private static final String WEB_INF_CLASSES = "/WEB-INF/classes/";
+
 	/**
 	 * Layout que contiene los layout verticales (columnas)
 	 * de information y license
@@ -129,10 +134,17 @@ public class Footer extends VerticalLayout {
 	 */
 	private String getLastModified(String fileName) {
 		String path = this.getClass().getClassLoader().getResource("").getPath();
-  		String serverPath = path.substring(0, path.length()-17);
-  		
   		ExternalProperties config = ExternalProperties.getInstance("/config.properties", false);
 		String dir = config.getSetting("dataIn");
+		String serverPath;
+		if (path.endsWith(WEB_INF_CLASSES)) {
+			serverPath = path.substring(0, path.length() - WEB_INF_CLASSES.length());
+		} else {
+			// Classpath plano (p.ej. mvn spring-boot:run): no existe WEB-INF/classes,
+			// así que se resuelve dataIn respecto a la raíz del classpath.
+			serverPath = path;
+			dir = dir.substring(WEB_INF_CLASSES.length());
+		}
 		String completeDir = serverPath + dir + "/";
 		
 		TimeZone zoneId = TimeZone.getTimeZone( "Europe/Madrid" );

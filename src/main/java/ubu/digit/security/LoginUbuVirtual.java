@@ -53,7 +53,20 @@ public class LoginUbuVirtual {
 		this.username = username;
 		this.password = password;
 	}
-	
+
+	/**
+	 * Constructor usado tras completar un login mediante SSO, donde el
+	 * {@link WebService} ya se ha autenticado (token obtenido a través del
+	 * flujo de SSO vía navegador de Moodle) sin necesidad de usuario y contraseña.
+	 *
+	 * @param host
+	 * @param webService servicio web ya autenticado
+	 */
+	public LoginUbuVirtual(String host, WebService webService) {
+		this.host = host;
+		this.webService = webService;
+	}
+
 	/**
 	 * Inicia sesión en el moodle de UbuVirtual con el usuario y contraseña especificados.
 	 * 

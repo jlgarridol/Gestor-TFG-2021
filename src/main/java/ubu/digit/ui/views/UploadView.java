@@ -58,6 +58,11 @@ public class UploadView extends VerticalLayout implements BeforeEnterObserver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UploadView.class.getName());
 
 	/**
+	 * Sufijo de ruta usado cuando la aplicación se despliega como WAR clásico.
+	 */
+	private static final String WEB_INF_CLASSES = "/WEB-INF/classes/";
+
+	/**
 	 * Nombre de la vista.
 	 */
 	public static final String VIEW_NAME = "upload";
@@ -116,10 +121,16 @@ public class UploadView extends VerticalLayout implements BeforeEnterObserver {
 		setSpacing(true);
 		
   		String path = this.getClass().getClassLoader().getResource("").getPath();
-  		serverPath = path.substring(0, path.length()-17);
-  		
 		config = ExternalProperties.getInstance("/config.properties", false);
 		dir = config.getSetting("dataIn");
+		if (path.endsWith(WEB_INF_CLASSES)) {
+			serverPath = path.substring(0, path.length() - WEB_INF_CLASSES.length());
+		} else {
+			// Classpath plano (p.ej. mvn spring-boot:run): no existe WEB-INF/classes,
+			// así que se resuelve dataIn respecto a la raíz del classpath.
+			serverPath = path;
+			dir = dir.substring(WEB_INF_CLASSES.length());
+		}
 		completeDir = serverPath + dir + "/";
 		
 		NavigationBar bat = new NavigationBar();
