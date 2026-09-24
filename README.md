@@ -32,3 +32,5 @@ El proyecto está desplegado en https://gestor-tfg-2021.herokuapp.com/ .
 * Instalar en modo producción (despliegue) --> mvn package -Pproduction
 * Iniciar app --> mvn spring-boot:run
 * Ejecutar los test --> mvn test
+
+
